@@ -1,0 +1,5 @@
+# mongoDb uri
+.env
+
+# firebase keys
+src/config/serviceAccountKey.json
