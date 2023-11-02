@@ -1,5 +1,6 @@
 import { Router } from "express";
+import { StaffModel } from "../models/staff";
 
 export const staffRouter = Router();
 
-module.exports = { staffRouter };
+export default staffRouter;

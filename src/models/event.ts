@@ -23,7 +23,4 @@ const Event = new Schema<eventType>({
   attached_forms: { type: [String], default: [] }, // by Note._id
 });
 
-module.exports = {
-  model: mongoose.models.Event || mongoose.model("Event", Event),
-  schema: Event,
-};
+export const EventModel = mongoose.model("Event", Event);

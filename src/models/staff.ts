@@ -23,7 +23,4 @@ const Staff = new Schema<staffType>({
   admin: { type: Boolean, default: false },
 });
 
-module.exports = {
-  model: mongoose.models.Staff || mongoose.model("Staff", Staff),
-  schema: Staff,
-};
+export const StaffModel = mongoose.model("Staff", Staff);

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-import { connect, connection } from "mongoose";
+import { connect, connection, set } from "mongoose";
 import { router } from "./routers/root.Router";
 import { exampleRoute } from "./routes/exampleRoute";
 import { verifyToken } from "./middlewares/verifyToken";
@@ -40,6 +40,7 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   try {
     if (process.env.MONGODB) {
+      set("strictQuery", false);
       connect(process.env.MONGODB);
       connection.on("open", () => console.log("Connected to MongoDB"));
       connection.on("error", (error: Error) => console.log(error));

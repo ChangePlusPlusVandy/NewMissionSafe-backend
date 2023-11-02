@@ -1,5 +1,6 @@
 import { Router } from "express";
+import { FormModel } from "../models/form";
 
 export const formRouter = Router();
 
-module.exports = { formRouter };
+export default formRouter;

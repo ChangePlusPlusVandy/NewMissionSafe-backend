@@ -1,5 +1,6 @@
 import { Router } from "express";
+import { YouthModel } from "../models/youth";
 
 export const youthRouter = Router();
 
-module.exports = { youthRouter };
+export default youthRouter;

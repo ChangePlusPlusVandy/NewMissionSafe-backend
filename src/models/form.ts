@@ -22,7 +22,4 @@ const Form = new Schema<formType>({
   associated_event_id: { type: String, default: null },
 });
 
-module.exports = {
-  model: mongoose.models.Form || mongoose.model("Form", Form),
-  schema: Form,
-};
+export const FormModel = mongoose.model("Form", Form);
