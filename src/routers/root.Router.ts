@@ -10,5 +10,3 @@ router.use("/events", eventRouter);
 router.use("/forms", formRouter);
 router.use("/staff", staffRouter);
 router.use("/youth", youthRouter);
-
-export default router;
