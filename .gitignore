@@ -3,3 +3,5 @@
 
 # firebase keys
 src/config/serviceAccountKey.json
+
+node_modules/
