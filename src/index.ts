@@ -8,7 +8,7 @@ import { router } from "./routers/root.Router";
 import { exampleRoute } from "./routes/exampleRoute";
 import { verifyToken } from "./middlewares/verifyToken";
 import { notFound, errorHandler } from "./middlewares/errors";
-import { addStaffToEvent } from "./controllers/event.controller";
+import { addYouthToEvent } from "./controllers/event.controller";
 
 dotenv.config();
 
@@ -46,8 +46,8 @@ app.listen(PORT, () => {
     //   connection.on("open", () => console.log("Connected to MongoDB"));
 	  connection.on("open", () => {
 		console.log("Connected to MongoDB");
-		addStaffToEvent('1234', 'trevor')
-			.then(res => console.log("updated event: ", res));
+		// addYouthToEvent('123', 'trev')
+		// 	.then(res => console.log("updated event: ", res));
 	});
       connection.on("error", (error: Error) => console.log(error));
     } else {

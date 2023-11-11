@@ -30,3 +30,13 @@ export async function addStaffToEvent(eventCode: string, staffId: string){
 	if(!updatedDocument) throw new Error("No event with code " + eventCode);
 	return updatedDocument;
 }
+
+export async function addYouthToEvent(eventCode: string, youthId: string){
+	const updatedDocument = await EventModel.findOneAndUpdate(
+		{ code: eventCode }, // Filter to find the document
+		{ $set: { attended_youth: youthId } }, // Update operation
+		{ new: true } // Options: return the modified document
+	  );
+	if(!updatedDocument) throw new Error("No event with code " + eventCode);
+	return updatedDocument;
+}
