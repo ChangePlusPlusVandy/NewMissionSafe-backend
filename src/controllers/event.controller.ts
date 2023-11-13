@@ -27,7 +27,10 @@ export const getEventByCode = async (eventCode: string) => {
 //review: it looks like we're using event as an id. Is there any reason to not just use mongo's _id field then show the event's name on the frontend?
 
 //adds a staff member to event with provided event code
-export const addStaffToEvent = async (eventCode: string, firebaseUID: string) => {
+export const addStaffToEvent = async (
+  eventCode: string,
+  firebaseUID: string,
+) => {
   const updatedDocument = await EventModel.findOneAndUpdate(
     { code: eventCode }, // Filter to find the document
     { $addToSet: { staff: firebaseUID } }, // Update operation
@@ -38,7 +41,10 @@ export const addStaffToEvent = async (eventCode: string, firebaseUID: string) =>
 };
 
 //adds a youth to an event with provided event code
-export const addYouthToEvent = async (eventCode: string, firebaseUID: string) => {
+export const addYouthToEvent = async (
+  eventCode: string,
+  firebaseUID: string,
+) => {
   const updatedDocument = await EventModel.findOneAndUpdate(
     { code: eventCode }, // Filter to find the document
     { $addToSet: { attended_youth: firebaseUID } }, // Update operation
