@@ -8,7 +8,6 @@ import { router } from "./routers/root.Router";
 import { exampleRoute } from "./routes/exampleRoute";
 import { verifyToken } from "./middlewares/verifyToken";
 import { notFound, errorHandler } from "./middlewares/errors";
-import { addYouthToEvent } from "./controllers/event.controller";
 
 dotenv.config();
 
@@ -43,12 +42,7 @@ app.listen(PORT, () => {
     if (process.env.MONGODB) {
       set("strictQuery", false);
       connect(process.env.MONGODB);
-    //   connection.on("open", () => console.log("Connected to MongoDB"));
-	  connection.on("open", () => {
-		console.log("Connected to MongoDB");
-		// addYouthToEvent('123', 'trev')
-		// 	.then(res => console.log("updated event: ", res));
-	});
+      connection.on("open", () => console.log("Connected to MongoDB"));
       connection.on("error", (error: Error) => console.log(error));
     } else {
       console.error("MONGODB environment variable is not defined.");
