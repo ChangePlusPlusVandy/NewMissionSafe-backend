@@ -9,6 +9,9 @@ import {
 export const eventRouter = Router();
 
 //review: is it good to return raw errors to the frontend?
+//review: error codes: how to differentiate between 500 and 404 if both will cause mongoose to throw error?
+
+//gets list of all events
 eventRouter.get("/", async (_req: Request, res: Response) => {
   try {
     const allEvents = await getAllEvents();
@@ -23,6 +26,7 @@ eventRouter.get("/", async (_req: Request, res: Response) => {
   }
 });
 
+//gets event with a provided code
 eventRouter.get("/:eventCode", async (req, res) => {
   try {
     //technically an array of events could be returned
@@ -38,6 +42,7 @@ eventRouter.get("/:eventCode", async (req, res) => {
   }
 });
 
+//adds event
 eventRouter.post("/", async (req: Request, res: Response) => {
   try {
     let event = await createEvent(req.body);
@@ -52,6 +57,7 @@ eventRouter.post("/", async (req: Request, res: Response) => {
   }
 });
 
+//adds a staff member to an event
 eventRouter.put("/addStaff/:eventCode", async (req, res) => {
   try {
     let event = await addStaffToEvent(
@@ -69,6 +75,7 @@ eventRouter.put("/addStaff/:eventCode", async (req, res) => {
   }
 });
 
+//adds a youth to an event
 eventRouter.put("/attend/:eventCode", async (req, res) => {
   try {
     await addYouthToEvent(req.params.eventCode, req.body.firebaseUID);
