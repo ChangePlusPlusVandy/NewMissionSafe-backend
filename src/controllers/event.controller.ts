@@ -5,14 +5,21 @@ import { HttpError, HttpStatus } from "../utils/errors";
 export const getAllEvents = async () => {
   try {
     const events = await EventModel.find();
-    if (!events) throw new Error("Events not found");
+    if (!events) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Events not found");
+    }
     return events;
-  } catch (err) {
-    throw new HttpError(
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      "Event retrieval failed",
-      { cause: err },
-    );
+  } catch (err: unknown) {
+    //rethrow any errors as HttpErrors
+    if (err instanceof HttpError) {
+      throw err;
+    } else {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Event retrieval failed",
+        { cause: err },
+      );
+    }
   }
 };
 
@@ -21,14 +28,24 @@ export const getEventByCode = async (eventCode: string) => {
   try {
     // this will find all events w/ eventCode
     const event = await EventModel.find({ code: eventCode });
-    if (!event) throw new Error("Event not found");
+    if (!event) {
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        "No event with code " + eventCode,
+      );
+    }
     return event;
-  } catch (err) {
-    throw new HttpError(
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      "Event retrieval failed",
-      { cause: err },
-    );
+  } catch (err: unknown) {
+    //rethrow any errors as HttpErrors
+    if (err instanceof HttpError) {
+      throw err;
+    } else {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Event retrieval failed",
+        { cause: err },
+      );
+    }
   }
 };
 
@@ -40,12 +57,17 @@ export const createEvent = async (eventFields: eventType) => {
     const newEvent = new EventModel(eventFields);
     await newEvent.save();
     return newEvent;
-  } catch (err) {
-    throw new HttpError(
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      "Event creation failed",
-      { cause: err },
-    );
+  } catch (err: unknown) {
+    //rethrow any errors as HttpErrors
+    if (err instanceof HttpError) {
+      throw err;
+    } else {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Event creation failed",
+        { cause: err },
+      );
+    }
   }
 };
 
@@ -60,16 +82,26 @@ export const addStaffToEvent = async (
       { $addToSet: { staff: firebaseUID } }, // Update operation
       { new: true }, // Options: return the modified document
     );
-    if (!updatedDocument)
+    if (!updatedDocument) {
       throw new HttpError(
         HttpStatus.NOT_FOUND,
         "No event with code " + eventCode,
       );
+    }
     return updatedDocument;
-  } catch (err) {
-    throw new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, "Add staff failed", {
-      cause: err,
-    });
+  } catch (err: unknown) {
+    //rethrow any errors as HttpErrors
+    if (err instanceof HttpError) {
+      throw err;
+    } else {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Add staff failed",
+        {
+          cause: err,
+        },
+      );
+    }
   }
 };
 
@@ -84,15 +116,25 @@ export const addYouthToEvent = async (
       { $addToSet: { attended_youth: firebaseUID } }, // Update operation
       { new: true }, // Options: return the modified document
     );
-    if (!updatedDocument)
+    if (!updatedDocument) {
       throw new HttpError(
         HttpStatus.INTERNAL_SERVER_ERROR,
         "No event with code " + eventCode,
       );
+    }
     return updatedDocument;
-  } catch (err) {
-    throw new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, "Add youth failed", {
-      cause: err,
-    });
+  } catch (err: unknown) {
+    //rethrow any errors as HttpErrors
+    if (err instanceof HttpError) {
+      throw err;
+    } else {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Add youth failed",
+        {
+          cause: err,
+        },
+      );
+    }
   }
 };
