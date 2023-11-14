@@ -6,22 +6,19 @@ import {
   addStaffToEvent,
   addYouthToEvent,
 } from "../controllers/event.controller";
+import { HttpError, HttpStatus } from "../utils/errors";
 export const eventRouter = Router();
-
-//review: is it good to return raw errors to the frontend?
-//review: error codes: how to differentiate between 500 and 404 if both will cause mongoose to throw error?
 
 //gets list of all events
 eventRouter.get("/", async (_req: Request, res: Response) => {
   try {
     const allEvents = await getAllEvents();
     res.status(200).json(allEvents);
-  } catch (err) {
-    //typescript makes us do this
-    if (err instanceof Error) {
-      res.status(404).json({ error: err.message });
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
     } else {
-      res.status(404).json({ error: "An unknown error occurred" });
+      res.status(500).json({ error: "An unknown error occurred" });
     }
   }
 });
@@ -32,12 +29,11 @@ eventRouter.get("/:eventCode", async (req, res) => {
     //technically an array of events could be returned
     const event = await getEventByCode(req.params.eventCode);
     res.status(200).json(event);
-  } catch (err) {
-    //typescript makes us do this
-    if (err instanceof Error) {
-      res.status(404).json({ error: err.message });
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
     } else {
-      res.status(404).json({ error: "An unknown error occurred" });
+      res.status(500).json({ error: "An unknown error occurred" });
     }
   }
 });
@@ -47,10 +43,9 @@ eventRouter.post("/", async (req: Request, res: Response) => {
   try {
     let event = await createEvent(req.body);
     res.status(200).json(event);
-  } catch (err) {
-    //typescript makes us do this
-    if (err instanceof Error) {
-      res.status(500).json({ error: err.message });
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
     } else {
       res.status(500).json({ error: "An unknown error occurred" });
     }
@@ -65,10 +60,9 @@ eventRouter.put("/addStaff/:eventCode", async (req, res) => {
       req.body.firebaseUID,
     );
     res.status(200).json(event);
-  } catch (err) {
-    //typescript makes us do this
-    if (err instanceof Error) {
-      res.status(500).json({ error: err.message });
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
     } else {
       res.status(500).json({ error: "An unknown error occurred" });
     }
@@ -80,10 +74,9 @@ eventRouter.put("/attend/:eventCode", async (req, res) => {
   try {
     await addYouthToEvent(req.params.eventCode, req.body.firebaseUID);
     res.status(200).send("Youth marked as present"); //review: would it be more useful to just return the updated document
-  } catch (err) {
-    //typescript makes us do this
-    if (err instanceof Error) {
-      res.status(500).json({ error: err.message });
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
     } else {
       res.status(500).json({ error: "An unknown error occurred" });
     }
