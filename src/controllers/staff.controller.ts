@@ -15,6 +15,15 @@ export const updateStaff = async (
   if (!staff) throw new Error("Staff not found");
 };
 
+export const updateStaffActive = async (
+  firebaseUID: string,
+  update: { key: string; value: boolean },
+) => {
+  const updateObj = { $set: { [update.key]: update.value } };
+  const staff = await StaffModel.findOneAndUpdate({ firebaseUID }, updateObj);
+  if (!staff) throw new Error("Staff not found");
+};
+
 export const getAllStaff = async () => {
   const allStaff = await StaffModel.find({});
   if (!allStaff) throw new Error("No staff found");
@@ -33,15 +42,8 @@ export const getStaffByID = async (firebaseUID: string) => {
   return staff;
 };
 
-export const getStaffByActive = async () => {
-  const staff = await StaffModel.find({ active: true });
-  if (!staff) throw new Error("Staff not found");
-  return staff;
-};
-
-export const getStaffByInactive = async () => {
-  // Unneeded? Router just uses getStaffByActive(active: false)
-  const staff = await StaffModel.find({ active: false });
+export const getStaffByActive = async (active: boolean) => {
+  const staff = await StaffModel.find({ active });
   if (!staff) throw new Error("Staff not found");
   return staff;
 };

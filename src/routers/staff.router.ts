@@ -3,11 +3,11 @@ import { Router, json } from "express";
 const {
   createStaff,
   updateStaff,
+  updateStaffActive,
   getAllStaff,
   getStaffByEmail,
   getStaffByID,
   getStaffByActive,
-  getStaffByInactive,
   getStaffByProgram,
 } = require("../controllers/staff.controller");
 
@@ -88,7 +88,7 @@ staffRouter.get("/byPrograms/:programs", async (req, res) => {
 //     param fireID
 staffRouter.put("/activate/:firebaseUID", async (req, res) => {
   try {
-    await updateStaff(req.params.firebaseUID, { active: true });
+    await updateStaff(req.params.firebaseUID, { key: "active", value: false });
     res.status(200).send("Staff activated");
   } catch (err) {
     res.status(500).send(err);
@@ -99,8 +99,53 @@ staffRouter.put("/activate/:firebaseUID", async (req, res) => {
 //     param fireID
 staffRouter.put("/deactivate/:firebaseUID", async (req, res) => {
   try {
-    await updateStaff(req.params.firebaseUID, { active: false });
+    await updateStaffActive(req.params.firebaseUID, {
+      key: "active",
+      value: false,
+    });
     res.status(200).send("Staff deactivated");
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// PUT new firstName
+//     param firebaseUID
+staffRouter.put("/updateFirstName/:firebaseUID", async (req, res) => {
+  try {
+    await updateStaff(req.params.firebaseUID, {
+      key: "firstName",
+      value: req.body.firstName,
+    });
+    res.status(200).send("Staff first name updated");
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// PUT new lastName
+//     param firebaseUID
+staffRouter.put("/updateLastName/:firebaseUID", async (req, res) => {
+  try {
+    await updateStaff(req.params.firebaseUID, {
+      key: "lastName",
+      value: req.body.lastName,
+    });
+    res.status(200).send("Staff last name updated");
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// PUT new email
+//     param firebaseUID
+staffRouter.put("/updateEmail/:firebaseUID", async (req, res) => {
+  try {
+    await updateStaff(req.params.firebaseUID, {
+      key: "email",
+      value: req.body.email,
+    });
+    res.status(200).send("Staff email updated");
   } catch (err) {
     res.status(500).send(err);
   }
