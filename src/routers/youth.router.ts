@@ -120,7 +120,8 @@ youthRouter.get("/inactive", async (req: Request, res: Response) => {
 //Create new youth
 youthRouter.post("/", async (req: Request, res: Response) => {
   try {
-    const youth = await createYouth(req.body);
+    const youthData = req.body as youthType;
+    const youth = await createYouth(youthData);
     res.status(200).json(youth);
   } catch (err: unknown) {
     if (err instanceof HttpError) {
@@ -140,7 +141,8 @@ youthRouter.post("/", async (req: Request, res: Response) => {
 //Update Youth
 youthRouter.put("/:firebaseUID", async (req: Request, res: Response) => {
   try {
-    const youth = await updateYouth(req.params.firebaseUID, req.body);
+    const youthData = req.body as youthType;
+    const youth = await updateYouth(req.params.firebaseUID, youthData);
     res.status(200).json(youth);
   } catch (err: unknown) {
     if (err instanceof HttpError) {
