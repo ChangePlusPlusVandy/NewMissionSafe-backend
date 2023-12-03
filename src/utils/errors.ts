@@ -1,25 +1,23 @@
 import mongoose from "mongoose";
 
-export function checkMongooseErrors(err: unknown){
-	if (err instanceof mongoose.Error.CastError) {
-		throw new HttpError(
-		  HttpStatus.BAD_REQUEST,
-		  "Mongoose failed to cast value",
-		  { cause: err },
-		);
-	  } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-		throw new HttpError(
-		  HttpStatus.BAD_REQUEST,
-		  "Mongoose could not find document",
-		  { cause: err },
-		);
-	  } else if (err instanceof mongoose.Error.ValidationError) {
-		throw new HttpError(
-		  HttpStatus.BAD_REQUEST,
-		  "Mongoose validation failed",
-		  { cause: err },
-		);
-	  }
+export function checkMongooseErrors(err: unknown) {
+  if (err instanceof mongoose.Error.CastError) {
+    throw new HttpError(
+      HttpStatus.BAD_REQUEST,
+      "Mongoose failed to cast value",
+      { cause: err },
+    );
+  } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
+    throw new HttpError(
+      HttpStatus.BAD_REQUEST,
+      "Mongoose could not find document",
+      { cause: err },
+    );
+  } else if (err instanceof mongoose.Error.ValidationError) {
+    throw new HttpError(HttpStatus.BAD_REQUEST, "Mongoose validation failed", {
+      cause: err,
+    });
+  }
 }
 
 export class HttpError extends Error {
