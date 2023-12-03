@@ -1,4 +1,4 @@
-import { EventModel, eventType } from "../models/event";
+import { EventModel, type eventType } from "../models/event";
 import { HttpError, HttpStatus } from "../utils/errors";
 
 //gets list of all events
