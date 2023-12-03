@@ -1,5 +1,5 @@
 import { EventModel, type eventType } from "../models/event";
-import { HttpError, HttpStatus } from "../utils/errors";
+import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
 
 //gets list of all events
 export const getAllEvents = async () => {
@@ -13,13 +13,15 @@ export const getAllEvents = async () => {
     //rethrow any errors as HttpErrors
     if (err instanceof HttpError) {
       throw err;
-    } else {
-      throw new HttpError(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        "Event retrieval failed",
-        { cause: err },
-      );
     }
+    //checks if mongoose threw and will rethrow with appropriate status code and message
+    checkMongooseErrors(err);
+
+    throw new HttpError(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Event retrieval failed",
+      { cause: err },
+    );
   }
 };
 
@@ -39,13 +41,15 @@ export const getEventByCode = async (eventCode: string) => {
     //rethrow any errors as HttpErrors
     if (err instanceof HttpError) {
       throw err;
-    } else {
-      throw new HttpError(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        "Event retrieval failed",
-        { cause: err },
-      );
     }
+    //checks if mongoose threw and will rethrow with appropriate status code and message
+    checkMongooseErrors(err);
+
+    throw new HttpError(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Event retrieval failed",
+      { cause: err },
+    );
   }
 };
 
@@ -61,13 +65,15 @@ export const createEvent = async (eventFields: eventType) => {
     //rethrow any errors as HttpErrors
     if (err instanceof HttpError) {
       throw err;
-    } else {
-      throw new HttpError(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        "Event creation failed",
-        { cause: err },
-      );
     }
+    //checks if mongoose threw and will rethrow with appropriate status code and message
+    checkMongooseErrors(err);
+
+    throw new HttpError(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Event creation failed",
+      { cause: err },
+    );
   }
 };
 
@@ -93,15 +99,13 @@ export const addStaffToEvent = async (
     //rethrow any errors as HttpErrors
     if (err instanceof HttpError) {
       throw err;
-    } else {
-      throw new HttpError(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        "Add staff failed",
-        {
-          cause: err,
-        },
-      );
     }
+    //checks if mongoose threw and will rethrow with appropriate status code and message
+    checkMongooseErrors(err);
+
+    throw new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, "Add staff failed", {
+      cause: err,
+    });
   }
 };
 
@@ -127,14 +131,12 @@ export const addYouthToEvent = async (
     //rethrow any errors as HttpErrors
     if (err instanceof HttpError) {
       throw err;
-    } else {
-      throw new HttpError(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        "Add youth failed",
-        {
-          cause: err,
-        },
-      );
     }
+    //checks if mongoose threw and will rethrow with appropriate status code and message
+    checkMongooseErrors(err);
+
+    throw new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, "Add youth failed", {
+      cause: err,
+    });
   }
 };
