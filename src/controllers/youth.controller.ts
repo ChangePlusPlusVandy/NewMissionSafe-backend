@@ -213,7 +213,7 @@ export const activateYouth = async (firebaseUID: string) => {
         HttpStatus.NOT_FOUND,
         "No youth with id: " + firebaseUID,
       );
-    } else if (updatedYouth.get("active") == false) {
+    } else if (!updatedYouth.get("active")) {
       throw new HttpError(
         HttpStatus.INTERNAL_SERVER_ERROR,
         "Youth was not activated",
@@ -249,7 +249,7 @@ export const deactivateYouth = async (firebaseUID: string) => {
         HttpStatus.NOT_FOUND,
         "No youth with id: " + firebaseUID,
       );
-    } else if (updatedYouth.get("active") == true) {
+    } else if (updatedYouth.get("active")) {
       throw new HttpError(
         HttpStatus.INTERNAL_SERVER_ERROR,
         "Youth was not deactivated",
