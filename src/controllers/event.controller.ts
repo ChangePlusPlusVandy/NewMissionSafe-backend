@@ -5,9 +5,6 @@ import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
 export const getAllEvents = async () => {
   try {
     const events = await EventModel.find();
-    if (events.length === 0) {
-      throw new HttpError(HttpStatus.NOT_FOUND, "Events not found");
-    }
     return events;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
