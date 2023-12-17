@@ -104,7 +104,7 @@ eventRouter.put(
   ) => {
     try {
       await addYouthToEvent(req.params.eventCode, req.body.firebaseUID);
-      res.status(200).send("Youth marked as present"); //review: would it be more useful to just return the updated document
+      res.status(200).send("Youth marked as present");
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });

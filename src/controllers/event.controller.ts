@@ -119,7 +119,7 @@ export const addYouthToEvent = async (
     );
     if (!updatedDocument) {
       throw new HttpError(
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.NOT_FOUND,
         "No event with code " + eventCode,
       );
     }
