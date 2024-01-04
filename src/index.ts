@@ -41,7 +41,7 @@ app.listen(PORT, () => {
   try {
     if (process.env.MONGODB) {
       set("strictQuery", false);
-      connect(process.env.MONGODB);
+      void connect(process.env.MONGODB);
       connection.on("open", () => console.log("Connected to MongoDB"));
       connection.on("error", (error: Error) => console.log(error));
     } else {
