@@ -1,6 +1,5 @@
 import { Router, json } from "express";
-
-const {
+import {
   createStaff,
   updateStaff,
   updateStaffActive,
@@ -9,7 +8,8 @@ const {
   getStaffByID,
   getStaffByActive,
   getStaffByProgram,
-} = require("../controllers/staff.controller");
+} from "../controllers/staff.controller";
+import { HttpError, HttpStatus } from "../utils/errors";
 
 export const staffRouter = Router();
 staffRouter.use(json());
@@ -17,70 +17,98 @@ staffRouter.use(json());
 // POST add new Staff document
 staffRouter.post("/", async (req, res) => {
   try {
-    let newStaff = await createStaff(req.body);
+    const newStaff = await createStaff(req.body);
     res.status(201).send(newStaff);
-  } catch (err) {
-    res.status(500).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
 // GET all Staff documents
 staffRouter.get("/", async (_req, res) => {
   try {
-    let allStaff = await getAllStaff();
+    const allStaff = await getAllStaff();
     res.status(200).send(allStaff);
-  } catch (err) {
-    res.status(404).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
 // GET staff by email
 staffRouter.get("/byEmail/:email", async (req, res) => {
   try {
-    let staff = await getStaffByEmail(req.params.email);
+    const staff = await getStaffByEmail(req.params.email);
     res.status(200).send(staff);
-  } catch (err) {
-    res.status(404).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
 // GET Staff document matching param fireID
 staffRouter.get("/byID/:firebaseUID", async (req, res) => {
   try {
-    let staff = await getStaffByID(req.params.firebaseUID);
+    const staff = await getStaffByID(req.params.firebaseUID);
     res.status(200).send(staff);
-  } catch (err) {
-    res.status(404).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
 // GET active Staff
 staffRouter.get("/active", async (_req, res) => {
   try {
-    let activeStaff = await getStaffByActive(true);
+    const activeStaff = await getStaffByActive(true);
     res.status(200).send(activeStaff);
-  } catch (err) {
-    res.status(404).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
 // GET inactive Staff
 staffRouter.get("/inactive", async (_req, res) => {
   try {
-    let inactiveStaff = await getStaffByActive(false);
+    const inactiveStaff = await getStaffByActive(false);
     res.status(200).send(inactiveStaff);
-  } catch (err) {
-    res.status(404).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
-// GET staff by email
+// GET staff by program
 staffRouter.get("/byPrograms/:programs", async (req, res) => {
   try {
-    let staff = await getStaffByProgram(req.params.programs);
+    const staff = await getStaffByProgram(req.params.programs);
     res.status(200).send(staff);
-  } catch (err) {
-    res.status(404).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
@@ -88,10 +116,17 @@ staffRouter.get("/byPrograms/:programs", async (req, res) => {
 //     param fireID
 staffRouter.put("/activate/:firebaseUID", async (req, res) => {
   try {
-    await updateStaff(req.params.firebaseUID, { key: "active", value: false });
+    await updateStaffActive(req.params.firebaseUID, {
+      key: "active",
+      value: true,
+    });
     res.status(200).send("Staff activated");
-  } catch (err) {
-    res.status(500).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
@@ -104,49 +139,94 @@ staffRouter.put("/deactivate/:firebaseUID", async (req, res) => {
       value: false,
     });
     res.status(200).send("Staff deactivated");
-  } catch (err) {
-    res.status(500).send(err);
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
-// PUT new firstName
+// PUT update staff attribute
 //     param firebaseUID
-staffRouter.put("/updateFirstName/:firebaseUID", async (req, res) => {
+//     body should include key and value
+staffRouter.put("/updateStaffAttribute/:firebaseUID", async (req, res) => {
   try {
-    await updateStaff(req.params.firebaseUID, {
-      key: "firstName",
-      value: req.body.firstName,
+    const { key, value } = req.body;
+
+    // Validate the key to ensure it's one of the allowed fields
+    const validKeys = ["firstName", "lastName", "email"];
+    if (!validKeys.includes(key)) {
+      return res.status(400).json({ error: "Invalid key provided" });
+    }
+
+    const updatedStaff = await updateStaff(req.params.firebaseUID, {
+      key,
+      value,
     });
-    res.status(200).send("Staff first name updated");
-  } catch (err) {
-    res.status(500).send(err);
+
+    res.status(200).send(`Staff ${key} updated`);
+    return updatedStaff;
+  } catch (err: unknown) {
+    if (err instanceof HttpError) {
+      res.status(err.errorCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 });
 
-// PUT new lastName
-//     param firebaseUID
-staffRouter.put("/updateLastName/:firebaseUID", async (req, res) => {
-  try {
-    await updateStaff(req.params.firebaseUID, {
-      key: "lastName",
-      value: req.body.lastName,
-    });
-    res.status(200).send("Staff last name updated");
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// // PUT new firstName
+// //     param firebaseUID
+// staffRouter.put("/updateFirstName/:firebaseUID", async (req, res) => {
+//   try {
+//     await updateStaff(req.params.firebaseUID, {
+//       key: "firstName",
+//       value: req.body.firstName,
+//     });
+//     res.status(200).send("Staff first name updated");
+//   } catch (err: unknown) {
+//     if (err instanceof HttpError) {
+//       res.status(err.errorCode).json({ error: err.message });
+//     } else {
+//       res.status(500).json({ error: "An unknown error occurred" });
+//     }
+//   }
+// });
 
-// PUT new email
-//     param firebaseUID
-staffRouter.put("/updateEmail/:firebaseUID", async (req, res) => {
-  try {
-    await updateStaff(req.params.firebaseUID, {
-      key: "email",
-      value: req.body.email,
-    });
-    res.status(200).send("Staff email updated");
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// // PUT new lastName
+// //     param firebaseUID
+// staffRouter.put("/updateLastName/:firebaseUID", async (req, res) => {
+//   try {
+//     await updateStaff(req.params.firebaseUID, {
+//       key: "lastName",
+//       value: req.body.lastName,
+//     });
+//     res.status(200).send("Staff last name updated");
+//   } catch (err: unknown) {
+//     if (err instanceof HttpError) {
+//       res.status(err.errorCode).json({ error: err.message });
+//     } else {
+//       res.status(500).json({ error: "An unknown error occurred" });
+//     }
+//   }
+// });
+
+// // PUT new email
+// //     param firebaseUID
+// staffRouter.put("/updateEmail/:firebaseUID", async (req, res) => {
+//   try {
+//     await updateStaff(req.params.firebaseUID, {
+//       key: "email",
+//       value: req.body.email,
+//     });
+//     res.status(200).send("Staff email updated");
+//   } catch (err: unknown) {
+//     if (err instanceof HttpError) {
+//       res.status(err.errorCode).json({ error: err.message });
+//     } else {
+//       res.status(500).json({ error: "An unknown error occurred" });
+//     }
+//   }
+// });
