@@ -1,11 +1,12 @@
 import { connect, connection, set } from "mongoose";
 
-const connectDB = async () => {
-  set("strictQuery", false);
-
+export const connectDB = () => {
   try {
     if (process.env.MONGODB) {
-      await connect(process.env.MONGODB);
+      set("strictQuery", false);
+      set("strictQuery", false);
+
+      void connect(process.env.MONGODB);
       connection.on("open", () => console.log("Connected to MongoDB"));
       connection.on("error", (error: Error) => console.log(error));
     } else {
@@ -15,5 +16,3 @@ const connectDB = async () => {
     console.error((err as Error).message);
   }
 };
-
-export { connectDB };

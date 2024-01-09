@@ -8,6 +8,7 @@ import { router } from "./routers/root.Router";
 import { exampleRoute } from "./routes/exampleRoute";
 import { verifyToken } from "./middlewares/verifyToken";
 import { notFound, errorHandler } from "./middlewares/errors";
+import { connectDB } from "./config/mongodb";
 
 dotenv.config();
 
@@ -38,17 +39,19 @@ app.use(notFound);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  try {
-    if (process.env.MONGODB) {
-      set("strictQuery", false);
-      void connect(process.env.MONGODB);
-      connection.on("open", () => console.log("Connected to MongoDB"));
-      connection.on("error", (error: Error) => console.log(error));
-    } else {
-      console.error("MONGODB environment variable is not defined.");
-    }
-  } catch (err) {
-    console.error((err as Error).message);
-  }
+  // try {
+  //   // if (process.env.MONGODB) {
+  //   //   set("strictQuery", false);
+  //   //   void connect(process.env.MONGODB);
+  //   //   connection.on("open", () => console.log("Connected to MongoDB"));
+  //   //   connection.on("error", (error: Error) => console.log(error));
+  //   // } else {
+  //   //   console.error("MONGODB environment variable is not defined.");
+  //   // }
+  //   connectDB();
+  // } catch (err) {
+  //   console.error((err as Error).message);
+  // }
+  connectDB();
   console.log(`Server starting @ PORT ${PORT}`);
 });
