@@ -131,6 +131,9 @@ export const getStaffByEmail = async (emailValue: string) => {
 export const getStaffByID = async (firebaseUIDValue: string) => {
   try {
     const staff = await StaffModel.findOne({ firebaseUID: firebaseUIDValue });
+    if (!staff) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Staff not found");
+    }
     return staff;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
@@ -170,7 +173,7 @@ export const getStaffByActive = async (activeValue: boolean) => {
 
 export const getStaffByProgram = async (programValue: string) => {
   try {
-    const staff = await StaffModel.find({ program: programValue });
+    const staff = await StaffModel.find({ programs: programValue });
     return staff;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
