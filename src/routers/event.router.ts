@@ -6,7 +6,8 @@ import {
   addStaffToEvent,
   addYouthToEvent,
 } from "../controllers/event.controller";
-import { HttpError, HttpStatus } from "../utils/errors";
+import { HttpError } from "../utils/errors";
+import { type eventType } from "../models/event";
 export const eventRouter = Router();
 
 //gets list of all events
@@ -39,46 +40,77 @@ eventRouter.get("/:eventCode", async (req, res) => {
 });
 
 //adds event
-eventRouter.post("/", async (req: Request, res: Response) => {
-  try {
-    let event = await createEvent(req.body);
-    res.status(200).json(event);
-  } catch (err: unknown) {
-    if (err instanceof HttpError) {
-      res.status(err.errorCode).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
+eventRouter.post(
+  "/",
+  async (req: Request<any, any, eventType>, res: Response) => {
+    try {
+      const event = await createEvent(req.body);
+      res.status(200).json(event);
+    } catch (err: unknown) {
+      if (err instanceof HttpError) {
+        res.status(err.errorCode).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: "An unknown error occurred" });
+      }
     }
-  }
-});
+  },
+);
 
 //adds a staff member to an event
-eventRouter.put("/addStaff/:eventCode", async (req, res) => {
-  try {
-    let event = await addStaffToEvent(
-      req.params.eventCode,
-      req.body.firebaseUID,
-    );
-    res.status(200).json(event);
-  } catch (err: unknown) {
-    if (err instanceof HttpError) {
-      res.status(err.errorCode).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
+eventRouter.put(
+  "/addStaff/:eventCode",
+  async (
+    req: Request<
+      {
+        eventCode: string;
+      },
+      any,
+      {
+        firebaseUID: string;
+      }
+    >,
+    res,
+  ) => {
+    try {
+      const event = await addStaffToEvent(
+        req.params.eventCode,
+        req.body.firebaseUID,
+      );
+      res.status(200).json(event);
+    } catch (err: unknown) {
+      if (err instanceof HttpError) {
+        res.status(err.errorCode).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: "An unknown error occurred" });
+      }
     }
-  }
-});
+  },
+);
 
 //adds a youth to an event
-eventRouter.put("/attend/:eventCode", async (req, res) => {
-  try {
-    await addYouthToEvent(req.params.eventCode, req.body.firebaseUID);
-    res.status(200).send("Youth marked as present"); //review: would it be more useful to just return the updated document
-  } catch (err: unknown) {
-    if (err instanceof HttpError) {
-      res.status(err.errorCode).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
+eventRouter.put(
+  "/attend/:eventCode",
+  async (
+    req: Request<
+      {
+        eventCode: string;
+      },
+      any,
+      {
+        firebaseUID: string;
+      }
+    >,
+    res,
+  ) => {
+    try {
+      await addYouthToEvent(req.params.eventCode, req.body.firebaseUID);
+      res.status(200).send("Youth marked as present");
+    } catch (err: unknown) {
+      if (err instanceof HttpError) {
+        res.status(err.errorCode).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: "An unknown error occurred" });
+      }
     }
-  }
-});
+  },
+);
