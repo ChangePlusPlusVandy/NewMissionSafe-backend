@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string;
+const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 if (!serviceAccountKey) {
   throw new Error("Firebase service account key not provided");
 }
