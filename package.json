@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "build": "npm install && tsc",
     "lint": "eslint --ext .ts . --fix",
     "test": "jest",
