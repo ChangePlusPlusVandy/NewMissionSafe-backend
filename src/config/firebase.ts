@@ -4,10 +4,17 @@
 
 import { initializeApp, cert, type ServiceAccount } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import serviceAccount from "./serviceAccountKey.json";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+if (!serviceAccountKey) {
+  throw new Error("Firebase service account key not provided");
+}
 
 const app = initializeApp({
-  credential: cert(serviceAccount as ServiceAccount),
+  credential: cert(JSON.parse(serviceAccountKey) as ServiceAccount),
 });
 
 const auth = getAuth(app);

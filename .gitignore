@@ -2,6 +2,7 @@
 .env
 
 # firebase keys
-src/config/serviceAccountKey.json
+serviceAccountKey.json
 
 node_modules/
+dist/
