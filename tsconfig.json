@@ -11,5 +11,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
   },
-  "include": ["./*.js", "src/**/*.ts", "test/**/*.ts", "./.eslintrc.cjs"]
+  "include": ["./*.js", "src/**/*.ts", "test/**/*.ts", "./.eslintrc.cjs"],
+  "builds": [
+    { "src": "src/index.ts", "use": "@now/node-typescript" }
+  ]
 }
