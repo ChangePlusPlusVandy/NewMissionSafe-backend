@@ -1,25 +1,39 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-interface formType {
+interface responseType {
+  responseID: string;
+  creatorID: string;
+  associatedYouthID: string;
+  timestamp: Date;
+  responses: string[];
+}
+
+const Response = new Schema<responseType>({
+  responseID: { type: String, required: true },
+  creatorID: { type: String, required: true },
+  timestamp: { type: Date, requried: true },
+  associatedYouthID: { type: String, required: true },
+  responses: { type: [String], required: true },
+});
+export interface formType {
+  formID: string;
   name: string;
   description: string;
-  date: Date;
-  content: string;
-  programs: string[];
-  staff: string[];
-  associated_youth_id?: string;
-  associated_event_id?: string;
+  dateCreated: Date;
+  creatorID: string;
+  questions: string[];
+  responses?: responseType[];
 }
 
 const Form = new Schema<formType>({
+  formID: { type: String, required: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
-  date: { type: Date, required: true },
-  content: { type: String, required: true },
-  programs: { type: [String], required: true },
-  associated_youth_id: { type: String, default: null },
-  associated_event_id: { type: String, default: null },
+  dateCreated: { type: Date, required: true },
+  creatorID: { type: String, required: true },
+  questions: { type: [String], required: true },
+  responses: { type: [Response] },
 });
 
 export const FormModel = mongoose.model("Form", Form);
