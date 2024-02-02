@@ -24,6 +24,7 @@ export interface formType {
   creatorID: string;
   questions: string[];
   responses?: responseType[];
+  isCounselorForm: boolean;
 }
 
 const Form = new Schema<formType>({
@@ -34,6 +35,7 @@ const Form = new Schema<formType>({
   creatorID: { type: String, required: true },
   questions: { type: [String], required: true },
   responses: { type: [Response] },
+  isCounselorForm: { type: Boolean },
 });
 
 export const FormModel = mongoose.model("Form", Form);
