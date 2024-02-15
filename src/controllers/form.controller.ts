@@ -86,7 +86,7 @@ export const createAndAddResponseToForm = async (
     }
 };
 
-export const getFormResponse = async (formID: string, requestedID: string) => {
+export const getFormResponse = async (formID: string, requestedResponseID: string) => {
     try {
         const form = await FormModel.findOne({ formID: formID });
         
@@ -96,13 +96,14 @@ export const getFormResponse = async (formID: string, requestedID: string) => {
                 "No Form with ID: " + formID
             );
         }else{
-            const response = form.responses?.find(({responseID}) => responseID === requestedID)
+            const response = form.responses?.find(({responseID}) => responseID === requestedResponseID)
             if (!response){
                 throw new HttpError(
                     HttpStatus.NOT_FOUND,
-                    "No Response with ID: " + requestedID
+                    "No Response with ID: " + requestedResponseID
                 ); 
             }
+            return response;
         }
     } catch (err: unknown) {
         //rethrow any errors as HttpErrors
