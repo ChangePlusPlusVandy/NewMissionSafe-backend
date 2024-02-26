@@ -54,7 +54,7 @@ export const createAndAddResponseToForm = async (
             );
         }
         const updatedDocument = await FormModel.findOneAndUpdate(
-            { code: formID },
+            { formID: formID },
             { $addToSet: { responses: newResponse } },
             { new: true }
 

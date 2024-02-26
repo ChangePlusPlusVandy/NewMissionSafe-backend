@@ -36,11 +36,11 @@ formRouter.get("/", async (req, res) => {
 })
 
 //PUT new response
-formRouter.put("/forms/:formID", async (req, res) => {
+formRouter.put("/formID/:formID", async (req, res) => {
     try {
         const form = await createAndAddResponseToForm(
             req.params.formID,
-            req.body.responseFields
+            req.body
         )
         res.status(200).json(form);
     } catch (err: unknown) {
@@ -53,7 +53,7 @@ formRouter.put("/forms/:formID", async (req, res) => {
 });
 
 //GET response
-formRouter.get("/forms/:formID/:responseID", async (req, res) => {
+formRouter.get("/:formID/:responseID", async (req, res) => {
     try {
         const formResponse = await getFormResponse(
             req.params.formID,
@@ -64,7 +64,7 @@ formRouter.get("/forms/:formID/:responseID", async (req, res) => {
         if (err instanceof HttpError) {
             res.status(err.errorCode).json({ error: err.message });
         } else {
-            res.status(500).json({ error: "An unknown error occurred while getting resposne" });
+            res.status(500).json({ error: "An unknown error occurred while getting response" });
         }
     }
 });
