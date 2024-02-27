@@ -36,7 +36,7 @@ formRouter.get("/", async (req, res) => {
 })
 
 //PUT new response
-formRouter.put("/formID/:formID", async (req, res) => {
+formRouter.put("/:formID", async (req, res) => {
     try {
         const form = await createAndAddResponseToForm(
             req.params.formID,
