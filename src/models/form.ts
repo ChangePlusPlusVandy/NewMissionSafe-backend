@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-interface responseType {
+export interface responseType {
   responseID: string;
   creatorID: string;
   associatedYouthID: string;
@@ -39,3 +39,4 @@ const Form = new Schema<formType>({
 });
 
 export const FormModel = mongoose.model("Form", Form);
+export const ResponseModel = mongoose.model("Response", Response);
