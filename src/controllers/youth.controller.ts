@@ -148,11 +148,19 @@ export const getInactiveYouth = async () => {
 //#region POST Methods
 export const createYouth = async (youthFields: youthType) => {
   try {
+    youthFields = {
+      ...youthFields,
+      birthDate: new Date(youthFields.birthDate),
+    };
+    console.log(youthFields.middleInitial === null);
+
     const newYouth = new YouthModel(youthFields);
     await newYouth.save();
     return newYouth;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
+
+    console.log(err);
     if (err instanceof HttpError) {
       throw err;
     } else {

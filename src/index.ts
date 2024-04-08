@@ -25,7 +25,7 @@ app.use(helmet());
  * Uses the verifyToken middleware to protect the "/data" route
  * Use the verifyToken to protect all the routes that require authentication
  */
-app.use("/api", verifyToken, router);
+app.use("/api", /*verifyToken,*/ router);
 app.use("/example", verifyToken, exampleRoute);
 
 // Default route: Unprotected

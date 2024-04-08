@@ -4,27 +4,47 @@ const Schema = mongoose.Schema;
 export interface youthType {
   firstName: string;
   lastName: string;
+  middleInitial: string;
   birthDate: Date;
+  ageJoined: number;
+  schoolDepartureTime: string;
+  programArrivalTime: string;
+  gender: string;
+  pronouns: string;
+  race: string;
+  ethnicity: string;
+  guardianName: string;
+  guardianPhone: string;
+  guardianEmail: string;
   ssn: string;
-  email: string;
-  firebaseUID: string;
   program: string;
+  attached_forms: string[];
+  attended_events: string[];
   active: boolean;
-  attached_forms?: string[];
-  attended_events?: string[];
+  uuid: string;
 }
 
 export const Youth = new Schema<youthType>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
+  middleInitial: { type: String, required: true },
   birthDate: { type: Date, required: true },
-  email: { type: String, required: true, index: { unique: true } },
+  ageJoined: { type: Number, required: true },
+  schoolDepartureTime: { type: String, required: true },
+  programArrivalTime: { type: String, required: true },
+  gender: { type: String, required: true },
+  pronouns: { type: String, required: true },
+  ethnicity: { type: String, required: true },
+  race: { type: String, required: true },
+  guardianName: { type: String, required: true },
+  guardianEmail: { type: String, required: true },
+  guardianPhone: { type: String, required: true },
   ssn: { type: String, required: true },
-  firebaseUID: { type: String, required: true, index: { unique: true } },
   program: { type: String, required: true },
-  active: { type: Boolean, default: false },
   attached_forms: { type: [String], default: [] }, // by Form._id
   attended_events: { type: [String], default: [] }, // by Event.code
+  active: { type: Boolean, default: false },
+  uuid: { type: String, required: true, index: { unique: true } },
 });
 
 export const YouthModel = mongoose.model("Youth", Youth);
