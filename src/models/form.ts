@@ -4,17 +4,17 @@ const Schema = mongoose.Schema;
 export interface responseType {
   responseID: string;
   creatorID: string;
-  associatedYouthID: string;
+  associatedYouthID?: string;
   timestamp: Date;
-  responses: string[];
+  responses: (string | string[])[];
 }
 
 const Response = new Schema<responseType>({
   responseID: { type: String, required: true },
   creatorID: { type: String, required: true },
   timestamp: { type: Date, requried: true },
-  associatedYouthID: { type: String, required: true },
-  responses: { type: [String], required: true },
+  associatedYouthID: { type: String, required: false },
+  responses: { type: [String , [String]], required: true },
 });
 export interface formType {
   formID: string;
