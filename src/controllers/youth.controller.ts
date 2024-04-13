@@ -27,7 +27,7 @@ export const getAllYouth = async () => {
 //Get youth by firebase ID
 export const getYouthByID = async (firebaseUID: string) => {
   try {
-    const youth = await YouthModel.find({ firebaseUID: firebaseUID });
+    const youth = await YouthModel.find({ uuid: firebaseUID });
     if (!youth) {
       throw new HttpError(
         HttpStatus.NOT_FOUND,
@@ -181,7 +181,7 @@ export const updateYouth = async (
 ) => {
   try {
     const updatedYouth = await YouthModel.findOneAndUpdate(
-      { firebaseUID: firebaseUID }, //filter by ID
+      { uuid: firebaseUID }, //filter by ID
       { $set: youthFields }, //update youth
       { new: true }, // return new obj
     );
