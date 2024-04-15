@@ -212,7 +212,7 @@ export const updateYouth = async (
 export const activateYouth = async (firebaseUID: string) => {
   try {
     const updatedYouth = await YouthModel.findOneAndUpdate(
-      { firebaseUID: firebaseUID }, //filter by ID
+      { uuid: firebaseUID }, //filter by ID
       { $set: { active: true } }, //activate youth
       { new: true }, // return new obj
     );
@@ -248,7 +248,7 @@ export const activateYouth = async (firebaseUID: string) => {
 export const deactivateYouth = async (firebaseUID: string) => {
   try {
     const updatedYouth = await YouthModel.findOneAndUpdate(
-      { firebaseUID: firebaseUID }, //filter by ID
+      { uuid: firebaseUID }, //filter by ID
       { $set: { active: false } }, //deactivate youth
       { new: true }, // return new obj
     );
