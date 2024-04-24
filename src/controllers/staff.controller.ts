@@ -173,7 +173,7 @@ export const getStaffByActive = async (activeValue: boolean) => {
 
 export const getStaffByProgram = async (programValue: string) => {
   try {
-    const staff = await StaffModel.find({ programs: programValue });
+    const staff = await StaffModel.find({ program: programValue });
     return staff;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors

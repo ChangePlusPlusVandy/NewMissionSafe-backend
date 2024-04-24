@@ -99,9 +99,9 @@ staffRouter.get("/inactive", async (_req, res) => {
 });
 
 // GET staff by program
-staffRouter.get("/byPrograms/:programs", async (req, res) => {
+staffRouter.get("/byProgram/:program", async (req, res) => {
   try {
-    const staff = await getStaffByProgram(req.params.programs);
+    const staff = await getStaffByProgram(req.params.program);
     res.status(200).send(staff);
   } catch (err: unknown) {
     if (err instanceof HttpError) {

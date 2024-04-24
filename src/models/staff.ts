@@ -6,10 +6,9 @@ export interface staffType {
   lastName: string;
   email: string;
   firebaseUID: string;
-  programs: string[];
+  program: string;
   active: boolean;
-  counselor: boolean;
-  admin: boolean;
+  role: number;
 }
 
 const Staff = new Schema<staffType>({
@@ -17,10 +16,9 @@ const Staff = new Schema<staffType>({
   lastName: { type: String, required: true },
   email: { type: String, required: true, index: { unique: true } },
   firebaseUID: { type: String, required: true, index: { unique: true } },
-  programs: { type: [String] },
+  program: { type: String, required: true },
   active: { type: Boolean, default: false },
-  counselor: { type: Boolean, default: false },
-  admin: { type: Boolean, default: false },
+  role: { type: Number, required: true },
 });
 
 export const StaffModel = mongoose.model("Staff", Staff);

@@ -120,7 +120,7 @@ youthRouter.get("/inactive", async (req: Request, res: Response) => {
 //Create new youth
 youthRouter.post("/", async (req: Request, res: Response) => {
   try {
-    const youthData = req.body as youthType;
+    const youthData = req.body
     const youth = await createYouth(youthData);
     res.status(200).json(youth);
   } catch (err: unknown) {

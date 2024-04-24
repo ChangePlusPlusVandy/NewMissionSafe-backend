@@ -11,8 +11,8 @@ import {
 } from "@aws-sdk/client-s3";
 import { s3Client } from "../config/s3Client";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
-import { Readable } from "stream";
-import { Response } from "express";
+import { type Readable } from "stream";
+import { type Response } from "express";
 
 export const createForm = async (formFields: formType) => {
   try {

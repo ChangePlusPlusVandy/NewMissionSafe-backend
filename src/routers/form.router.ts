@@ -71,7 +71,7 @@ formRouter.put("/:formID", uploadS3.array("images"), async (req, res) => {
       for (let i = 0; i < req.body.responses.length; ++i) {
         if (req.body.responses[i] == "image") {
           const files = req.files as any;
-          req.body.responses[i] = `image:${files.shift().key}`; //shows as image:key for decoding later
+          req.body.responses[i] = `${files.shift().key}`; //shows as image:key for decoding later
         }
       }
     }
@@ -94,12 +94,8 @@ formRouter.put("/:formID", uploadS3.array("images"), async (req, res) => {
 formRouter.get("/images/:key", async (req, res) => {
   try {
     const clientETag = req.headers["if-none-match"];
-	await handleImageResponse(
-      req.params.key,
-      res,
-      clientETag,
-    );
-	//handleImageResponse function shouldn't return without either throwing an error or ending the response
+    await handleImageResponse(req.params.key, res, clientETag);
+    //handleImageResponse function shouldn't return without either throwing an error or ending the response
   } catch (err: unknown) {
     if (err instanceof HttpError) {
       res.status(err.errorCode).json({ error: err.message });

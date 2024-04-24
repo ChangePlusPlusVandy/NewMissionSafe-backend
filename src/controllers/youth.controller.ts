@@ -27,7 +27,7 @@ export const getAllYouth = async () => {
 //Get youth by firebase ID
 export const getYouthByID = async (firebaseUID: string) => {
   try {
-    const youth = await YouthModel.find({ firebaseUID: firebaseUID });
+    const youth = await YouthModel.find({ uuid: firebaseUID });
     if (!youth) {
       throw new HttpError(
         HttpStatus.NOT_FOUND,
@@ -148,11 +148,19 @@ export const getInactiveYouth = async () => {
 //#region POST Methods
 export const createYouth = async (youthFields: youthType) => {
   try {
+    youthFields = {
+      ...youthFields,
+      birthDate: new Date(youthFields.birthDate),
+    };
+    console.log(youthFields.middleInitial === null);
+
     const newYouth = new YouthModel(youthFields);
     await newYouth.save();
     return newYouth;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
+
+    console.log(err);
     if (err instanceof HttpError) {
       throw err;
     } else {
@@ -173,7 +181,7 @@ export const updateYouth = async (
 ) => {
   try {
     const updatedYouth = await YouthModel.findOneAndUpdate(
-      { firebaseUID: firebaseUID }, //filter by ID
+      { uuid: firebaseUID }, //filter by ID
       { $set: youthFields }, //update youth
       { new: true }, // return new obj
     );
@@ -204,7 +212,7 @@ export const updateYouth = async (
 export const activateYouth = async (firebaseUID: string) => {
   try {
     const updatedYouth = await YouthModel.findOneAndUpdate(
-      { firebaseUID: firebaseUID }, //filter by ID
+      { uuid: firebaseUID }, //filter by ID
       { $set: { active: true } }, //activate youth
       { new: true }, // return new obj
     );
@@ -240,7 +248,7 @@ export const activateYouth = async (firebaseUID: string) => {
 export const deactivateYouth = async (firebaseUID: string) => {
   try {
     const updatedYouth = await YouthModel.findOneAndUpdate(
-      { firebaseUID: firebaseUID }, //filter by ID
+      { uuid: firebaseUID }, //filter by ID
       { $set: { active: false } }, //deactivate youth
       { new: true }, // return new obj
     );
