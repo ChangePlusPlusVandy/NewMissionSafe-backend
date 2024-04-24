@@ -4,7 +4,15 @@ import {
   ResponseModel,
   type responseType,
 } from "../models/form";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  HeadObjectCommand,
+} from "@aws-sdk/client-s3";
+import { s3Client } from "../config/s3Client";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
+import { type Readable } from "stream";
+import { type Response } from "express";
 
 export const createForm = async (formFields: formType) => {
   try {
@@ -66,9 +74,117 @@ export const getFormByID = async (formId: string) => {
   }
 };
 
+const mimeToFileType = (mimeType: string): string => {
+  const fileType = mimeType.split("/").pop();
+  switch (fileType) {
+    case "jpeg":
+      return "jpg";
+    case undefined:
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        "File type could not be found from mime type",
+      );
+    default:
+      return fileType;
+  }
+};
+
+export const handleImageResponse = async (
+  objectName: string,
+  res: Response,
+  prevEtag: string | undefined = undefined,
+) => {
+  try {
+    const bucketName = process.env.IMAGE_BUCKET_NAME;
+    if (!bucketName) {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "No bucket name provided",
+      );
+    }
+
+    const params = {
+      Bucket: bucketName,
+      Key: objectName,
+    };
+
+    let headResponse;
+    try {
+      // get bare minimum http-header information
+      headResponse = await s3Client.send(new HeadObjectCommand(params));
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "s3 object retrieval failed",
+        { cause: err },
+      );
+    }
+
+    //avoid resending images if browser's cached version is up to date
+    if (prevEtag && prevEtag == headResponse.ETag) {
+      res.status(304).end();
+      return;
+    }
+
+    res.set({
+      "Content-Length": headResponse.ContentLength,
+      "Content-Type": headResponse.ContentType,
+      ETag: headResponse.ETag,
+    });
+
+    // Prepare cache headers
+    const cacheLength = 1000 * 60 * 60 * 24 * 30; // about a month
+    res.setHeader("Cache-Control", `public, max-age=${cacheLength / 1000}`);
+    res.setHeader("Expires", new Date(Date.now() + cacheLength).toUTCString());
+
+    // get the object data and stream it
+    const response = await s3Client.send(new GetObjectCommand(params));
+    const stream = response.Body as Readable;
+
+    if (stream == null) {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "S3 get object response body is null",
+      );
+    }
+    if (headResponse.ContentType) {
+      res.type(headResponse.ContentType);
+    }
+    stream.on("data", (chunk) => res.write(chunk));
+    stream.once("end", () => {
+      res.end();
+    });
+    stream.once("error", () => {
+      res.end();
+    });
+    return;
+  } catch (err) {
+    //rethrow HttpErrors
+    if (err instanceof HttpError) {
+      throw err;
+    }
+    throw new HttpError(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "s3 object retrieval failed",
+      { cause: err },
+    );
+  }
+};
+
+const generateKey = (
+  responseId: string,
+  imageNumber: number,
+  mimeType: string,
+): string => {
+  return `${responseId}${imageNumber}.${mimeToFileType(mimeType)}`;
+};
+
 export const createAndAddResponseToForm = async (
   formID: string,
-  responseFields: responseType,
+  responseFields: Omit<responseType, "images"> & {
+    //need to temporarily allow images field to have data and mimeType since that is how it will be received from frontend. Frontend doesn't send key so that field must be added in the code
+    images?: { data: string; mimeType: string; key: string }[];
+  },
 ) => {
   try {
     const newResponse = new ResponseModel(responseFields);

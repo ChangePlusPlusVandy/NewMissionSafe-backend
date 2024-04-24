@@ -6,7 +6,8 @@ export interface responseType {
   creatorID: string;
   associatedYouthID: string;
   timestamp: Date;
-  responses: string[];
+  responses: (string | string[])[];
+  images: { key: string }[];
 }
 
 const Response = new Schema<responseType>({
@@ -14,7 +15,8 @@ const Response = new Schema<responseType>({
   creatorID: { type: String, required: true },
   timestamp: { type: Date, requried: true },
   associatedYouthID: { type: String, required: true },
-  responses: { type: [String], required: true },
+  responses: { type: [Schema.Types.Mixed], required: true },
+  images: { type: [{ key: String }], required: true, default: [] },
 });
 export interface formType {
   formID: string;

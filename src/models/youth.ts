@@ -18,7 +18,7 @@ export interface youthType {
   guardianEmail: string;
   ssn: string;
   program: string;
-  attached_forms: string[];
+  attached_forms: object[];
   attended_events: string[];
   active: boolean;
   uuid: string;
@@ -41,7 +41,7 @@ export const Youth = new Schema<youthType>({
   guardianPhone: { type: String, required: true },
   ssn: { type: String, required: true },
   program: { type: String, required: true },
-  attached_forms: { type: [String], default: [] }, // by Form._id
+  attached_forms: { type: [Object], default: [] }, // by Form._id
   attended_events: { type: [String], default: [] }, // by Event.code
   active: { type: Boolean, default: false },
   uuid: { type: String, required: true, index: { unique: true } },
