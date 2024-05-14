@@ -77,7 +77,7 @@ export const updateStatus = async (
       youthId: youthID,
     };
 
-    const updateObj = { status: status };
+    const updateObj = { status: status, modified: "Yes" };
     const youth = await AttendanceModel.findOneAndUpdate(filter, updateObj, {
       new: true,
     });
@@ -105,18 +105,8 @@ export const updateStatus = async (
 
 export const getAttendanceInRange = async (startDay: Date, endDay: Date) => {
   try {
-    const year1 = startDay.getFullYear();
-    const month1 = startDay.getMonth();
-    const day1 = startDay.getDate();
-    const startDayFormatted = new Date(year1, month1, day1);
-
-    const year2 = endDay.getFullYear();
-    const month2 = endDay.getMonth();
-    const day2 = endDay.getDate();
-    const endDayFormatted = new Date(year2, month2, day2);
-
     const youths = await AttendanceModel.find({
-      timestamp: { $gte: startDayFormatted, $lte: endDayFormatted },
+      timestamp: { $gte: startDay, $lte: endDay },
     });
 
     if (youths.length == 0) {

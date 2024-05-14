@@ -6,6 +6,9 @@ export interface eventType {
   description: string;
   code: string;
   date: Date;
+  startTime: string;
+  endTime: string;
+  location?: string;
   programs: string[];
   staff: string[];
   attended_youth?: string[];
@@ -17,6 +20,9 @@ const Event = new Schema<eventType>({
   description: { type: String, required: true },
   code: { type: String, required: true },
   date: { type: Date, required: true },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+  location: { type: String },
   programs: { type: [String], required: true },
   staff: { type: [String], required: true }, // by Staff.fireID
   attended_youth: { type: [String], default: [] }, // by Youth.fireID

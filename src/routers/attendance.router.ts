@@ -23,20 +23,24 @@ attendanceRouter.get("/:uid/:date", async (req: Request, res: Response) => {
   }
 });
 
-attendanceRouter.get("/getAttendances", async (req: Request, res: Response) => {
-  try {
-    const startDate = new Date(req.body.startDate);
-    const endDate = new Date(req.body.endDate);
-    const youth = await getAttendanceInRange(startDate, endDate);
-    res.status(200).json(youth);
-  } catch (err: unknown) {
-    if (err instanceof HttpError) {
-      res.status(err.errorCode).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
+attendanceRouter.get(
+  "/getAttendances/:startDate/:endDate",
+  async (req: Request, res: Response) => {
+    try {
+      const startDate = new Date(req.params.startDate);
+      const endDate = new Date(req.params.endDate);
+
+      const youth = await getAttendanceInRange(startDate, endDate);
+      res.status(200).json(youth);
+    } catch (err: unknown) {
+      if (err instanceof HttpError) {
+        res.status(err.errorCode).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: "An unknown error occurred" });
+      }
     }
-  }
-});
+  },
+);
 
 attendanceRouter.post(
   "/",
